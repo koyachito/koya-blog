@@ -92,7 +92,16 @@
     https://www.issoh.co.jp/tech/details/3660/
 - とりあえずMarkdown内のHTMLタグ実装は後回しでいいかも
 
-
 ### 学び
+- JSXエスケープをデフォルトでやるreact-markdown便利
+- 仕様を削ったことでより安全になった
+- 別のブランチでnpm installした場合はmainでnpm ciしないとダメ
+
 ### 詰まったところ
+- 戻り値を整理するのがやや混乱した
+
 ### 次にやること
+- CRUD処理
+- まずはRead -> Create -> Delete, Update
+- これが参考になりそう
+https://mikoto2000.blogspot.com/2025/01/prisma-typescript-postgresql.html
