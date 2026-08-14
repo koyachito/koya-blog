@@ -1,0 +1,92 @@
+# dev-log
+## 目的
+このログでは，koya-blogの開発過程を記録する。
+単なる作業記録ではなく，
+
+- 何を実施したか
+- なぜ実施したか
+- どのコマンド・設定を使ったか
+- 実行によって何が起きるか
+- 技術的に何を理解したか
+- どのような判断をしたか
+- どのような問題が発生したか
+
+を記録し，後から自分で開発内容を説明できる状態にする。
+
+## Day1 - 2026/08/12
+### 実施したこと
+- `npx create-next-app@latest koya-blog`
+- TypeScript, ESLint, React Compiler, App RouterをYesにした
+- `app/page.tsx`,`app/layout.tsx`,`globals.css`,`page.module.css`を読んだ
+- 簡潔なREADME.md初版を書いた
+
+### 学び
+- 今回はCSS凝らないのでTailwindはなし
+- page.tsx
+    - export default function Home()の戻り値がJSX
+    - CSS Moduleのクラスとしてstyles.pageを読み込んでいる
+    - next/imageのImageコンポーネントを読み込んでいる
+- layout.tsx
+    - RootLayoutで各ページを共通のHTML構造で包む
+    - LayoutProps<"/">型のオブジェクトを受け取り，childrenプロパティを取り出して変数に（分割代入）
+    - metadata
+    - next/font/googleからGoogle FontsのGeistを使用
+- globals.cssで全体，pages.module.cssでページごとのスタイルを作る
+
+### 詰まったところ
+- 初期設定でどれを入れるか・入れないかの判断はやや時間がかかった
+
+### 次にやること
+- 要件定義
+- 環境構築の続き
+    - Docker Compose
+    - Prisma
+    - PostgreSQLとの接続
+
+## Day2 - 2026/08/13
+### 実施したこと
+- docs/requirements
+- docker
+    - docker-compose.yaml
+    - docker compose up -d
+    - docker compose ps
+- prisma
+    - npx prisma init
+    - .env, .env.example, schema.prismaの変更
+    - npx prisma migrate dev --name init
+
+### 学び
+- 要件定義
+    - 開発途中でブレないように要件を定義，Geminiなどを使ってブラッシュアップ
+- DockerによるDBコンテナ構築
+    - ローカル環境に直接PostgreSQLをインストールせず，コンテナ上に独立したDB環境を構築。
+    - 開発環境が汚染されないことと，チーム開発でも同一環境が再現できるのが強み
+    - `-d`オプションでバックグラウンドで常駐実行
+    - `ps`で確認
+- Prismaセットアップ，DB接続
+    - ORM(Object Relational Mapping): TypeScriptとDB構造を自動で対応づけ、SQLを書かずにTypeScriptからDBを叩けるようにする
+    - `.env`でデータベース接続情報などの機密情報を管理，`.gitignore`に含める
+    - `compose.yaml`の方ではなく`.env`にDB接続情報を書き，変数で管理
+    - `.env.example`は環境構築把握のためのもの，githubコミットする
+    - `schema.prisma`でデータベースのテーブル構造（モデル），リレーションを定義
+        - 今回はPostとTagの多対多リレーションを定義
+    - マイグレーション: `schema.prisma`の差分を検出して，`prisma/migrations`にSQLを自動生成し，DBへ適応
+        - 正確にはDDL: データ定義言語によってテーブルの作成や変更が行われる。SQL命令
+        - `schema.prisma`の変更・保存だけではPostgreSQL内部のテーブル構造は変更されない。マイグレーションを行なって初めてSQL命令が実行され，テーブルが追加・変更される
+        - テーブルや列，インデックスが実際に作成される
+        - `_prisma_migrations`テーブルでどのマイグレーションファイルがいつ適応されたかメタデータを保存する
+    - 多対多リレーションの場合，中間テーブル(Junction Table)を作成
+        - 今回の場合だとPostテーブルのidとTagテーブルidのペアを保存する_PostTagsテーブルを作成
+
+### 詰まったところ
+- 要件定義時の具体的な技術選定は，初めてのTyoeScriptプロジェクトということもあり知識が乏しく，インターネット検索で記事を調べたりAIに聞いたりして最適なサービスを探すのに時間がかかった
+- 当初compose.yamlに DB情報をハードコーディングしてしまっていたのでセキュリティ的に危険な状態だった
+
+### 次にやること
+- MarkdownからHTMLに変換・サニタイズする関数の作成
+
+## Day3 - 2026/08/14
+### 実施したこと
+### 学び
+### 詰まったところ
+### 次にやること
