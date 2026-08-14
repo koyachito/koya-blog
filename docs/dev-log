@@ -87,6 +87,12 @@
 
 ## Day3 - 2026/08/14
 ### 実施したこと
+- npm install react-markdown remark-gfm rehype-sanitize rehype-raw rehype-slug
+    - 以下を参考にした
+    https://www.issoh.co.jp/tech/details/3660/
+- とりあえずMarkdown内のHTMLタグ実装は後回しでいいかも
+
+
 ### 学び
 ### 詰まったところ
 ### 次にやること
