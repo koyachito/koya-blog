@@ -185,6 +185,123 @@ https://mikoto2000.blogspot.com/2025/01/prisma-typescript-postgresql.html
     - Codespacesの外部URLをAuth.jsに設定
     - Google Cloud側にもCodespacesのURLを設定
     - Google OAuthによるログインを確認
+## GitHub CodespacesでServer Actionsが実行できない問題
+
+### 症状
+
+管理画面にログアウト用のServer Actionを実装したところ、以下のエラーが発生した。
+
+Invalid Server Actions request.
+
+Next.js:
+16.3.0 (Turbopack)
+
+### 切り分け
+
+最初はAuth.jsのsignOut()が原因だと考えた。
+
+しかし、signOut()を外して最小のServer Actionにしても同じエラーが発生した。
+
+"use server";
+
+export async function testAction() {
+    console.log("Server Action executed");
+}
+
+このことから、signOut()ではなくServer Actions自体に問題があると判断した。
+
+### 原因
+
+今回の開発環境はGitHub Codespacesを使用している。
+
+Codespace内部ではNext.jsがlocalhost:3000で動作しているが、ブラウザからは以下のようなGitHub Codespacesの転送URLからアクセスしている。
+
+https://xxxxx-3000.app.github.dev
+
+つまり、
+
+ブラウザ
+↓
+https://xxxxx-3000.app.github.dev
+↓
+GitHub Codespacesのポートフォワーディング
+↓
+localhost:3000
+↓
+Next.js
+
+という構成になっている。
+
+Next.jsのServer ActionsにはOrigin/Hostに関するセキュリティチェックがあるため、Codespacesのポートフォワーディングによって外部URLと内部のホスト情報が異なることで、Server Actionのリクエストが拒否されていた。
+
+### Auth.jsの設定との違い
+
+.envには以下を設定していた。
+
+AUTH_TRUST_HOST=true
+AUTH_URL=https://xxxxx-3000.app.github.dev
+
+しかし、これらはAuth.js側の設定であり、Next.jsのServer ActionsのOrigin検証とは別の仕組みだった。
+
+そのため、Google OAuthによるログインは正常に動作していたが、Server Actionsだけがエラーになっていた。
+
+### 解決
+
+next.config.tsにServer Actionsの許可Originを追加した。
+
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+    reactCompiler: true,
+
+    experimental: {
+        serverActions: {
+            allowedOrigins: [
+                "localhost:3000",
+                "*.app.github.dev",
+                "*.github.dev",
+                "*.githubpreview.dev",
+            ],
+        },
+    },
+};
+
+export default nextConfig;
+
+設定変更後、.nextを削除してNext.jsを再起動した。
+
+rm -rf .next
+npm run dev
+
+その後、最小のServer Actionを実行したところ正常に動作した。
+
+### 学んだこと
+
+・GitHub Codespacesでは、アプリ内部のURLとブラウザからアクセスするURLが異なる
+・ポートフォワーディングによってlocalhost:3000が*.app.github.devとして公開される
+・Auth.jsのAUTH_URL / AUTH_TRUST_HOSTと、Next.js Server ActionsのOrigin検証は別の仕組み
+・エラーが発生したライブラリをすぐに原因と決めつけず、最小構成にして切り分けることが重要
+・signOut()を外してもエラーが再現したことで、Auth.jsを原因から除外できた
+・最小のServer Actionでもエラーが発生したため、Next.jsおよびCodespacesの環境側を調査して解決した
+
+### デバッグの流れ
+
+signOut()でエラー
+↓
+signOut()を外してもエラー
+↓
+最小のServer Actionでもエラー
+↓
+Auth.jsが原因ではないと判断
+↓
+Next.js Server Actions側を調査
+↓
+CodespacesのポートフォワーディングによるOrigin/Hostの違いを確認
+↓
+allowedOriginsを設定
+↓
+解決
+
 
 ### 次にやること
 
