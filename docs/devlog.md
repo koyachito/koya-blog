@@ -105,3 +105,68 @@
 - まずはRead -> Create -> Delete, Update
 - これが参考になりそう
 https://mikoto2000.blogspot.com/2025/01/prisma-typescript-postgresql.html
+
+## Day4 - 2026/08/16
+### 実施したこと
+- `lib/posts.ts`でCRUD処理を実装
+- `scripts/test-posts.ts`で動作確認
+- Prisma 7のPostgreSQL用Driver Adapter `PrismaPg`を導入
+
+### 学び
+- ORMが便利すぎる，Prismaを使うことでSQLを直接書かなくてもTSからCRUDを簡潔に実装できる
+- Prisma Clientま`schema.prisma`から生成される
+- Prisma 7ではPostgreSQLへの接続にDriver Adapterが必要
+
+### 詰まったところ
+1. Prisma Clientが見つからない
+- `npx tsc --noEmit`したら`lib/prisma.ts`のPrismaClientがないとエラーが出た
+- schema.prismaからPrisma Clientが生成されてなかった
+    - `npx prisma generate`でClientのコードを生成
+    - npx tsc --noEmitで解決を確認
+
+2. docker compose psがエラー("invalid proto:")
+    - compose.yamlでvolume:を書き忘れ, portsの方に書いてしまっていた
+
+3. TypeScriptのテスト実行環境
+- npm install -D tsx
+    - npx installではない
+
+4. Prisma 7でPrismaClientの初期化に失敗
+- new PrismaClient()で初期化したところ，
+- PrismaClientInitializationError: PrismaClient was instantiated without any options. A driver adapter is required to connect to your database.
+というエラーが出た
+
+- Prisma 7ではPostgreSQLへの接続にDriver Adapterが必要
+
+- アダプターをインストール
+    - `npm install @prisma/adapter-pg pg`
+    - prisma/schema.prismaを`prisma-client-js`から`prisma-client`に修正，保存先をgenerated/prismaに
+    - lib/prisma.tsでPrismaPgを導入
+        - .envのDATABASE_URLが存在することをチェック
+    - npx prisma generateを再生成
+    - npx tsc --noEmitで型チェック
+    - npx scripts/test-posts.tsでCRUD動作を確認
+
+### 次にやること
+- Next.jsからgetPosts()を呼び出して記事一覧を表示
+- getPost()を使って記事詳細を表示
+- 管理画面からCRUD操作ができるようにする
+
+
+## Day4 - 2026/08/16
+### 実施したこと
+### 学び
+### 詰まったところ
+### 次にやること
+
+## Day4 - 2026/08/16
+### 実施したこと
+### 学び
+### 詰まったところ
+### 次にやること
+
+## Day4 - 2026/08/16
+### 実施したこと
+### 学び
+### 詰まったところ
+### 次にやること
