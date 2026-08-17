@@ -153,19 +153,48 @@ https://mikoto2000.blogspot.com/2025/01/prisma-typescript-postgresql.html
 - 管理画面からCRUD操作ができるようにする
 
 
-## Day4 - 2026/08/16
+## Day5 - 2026/08/17
+### 実施したこと
+- `docs/requirements`の修正
+    - サニタイズ要件の削除（react-markdownのため不必要に)
+    - Markdown内でHTMLタグを使わない旨明記
+    - 認証要件，パスワードのハッシュ化は場合によっては必要ないので技術選定に関わらない形に書き直し
+- 開発環境構築手順書の作成
+- 要件変更により使用しなくなったパッケージをアンインストール
+
+### 学び
+### 詰まったところ
+### 詰まったところ
+- Auth.js実装時に`handlers`が`undefined`になるエラー
+    - `next-auth@4.24.15`がインストールされていた
+    - v4とv5ではAuth.jsのAPIが異なり，`handlers`を使用する現在の実装はv5向けだった
+    - `npm install next-auth@beta`でv5へ更新
+    - `auth.ts`の実装例をそのまま使ったため，インストールされているバージョンとの違いに気づかなかった
+- Auth.jsでMissingSecretエラー
+    - `/api/auth/providers`へアクセスしたところ`MissingSecret`が発生
+    - Google OAuthの`AUTH_GOOGLE_SECRET`とは別に，Auth.js自身の`AUTH_SECRET`が必要
+    - `npx auth secret`で`BETTER_AUTH_SECRET`を生成し`.env`に設定
+
+- Auth.jsのSecret設定
+    -  `npx auth secret`で生成した環境変数名が`BETTER_AUTH_SECRET`になっていた
+    - 今回はAuth.jsを使用しているため，`AUTH_SECRET`として`.env`に設定
+    - `/api/auth/providers`にアクセスし，Google Providerの情報がJSONで返ることを確認
+
+- CodespacesでOAuthのURLがlocalhostになる
+    - Auth.jsがOAuthの`signinUrl`，`callbackUrl`を`localhost:3000`として生成
+    - Codespacesの外部URLをAuth.jsに設定
+    - Google Cloud側にもCodespacesのURLを設定
+    - Google OAuthによるログインを確認
+
+### 次にやること
+
+## Day6 - 2026/08/18
 ### 実施したこと
 ### 学び
 ### 詰まったところ
 ### 次にやること
 
-## Day4 - 2026/08/16
-### 実施したこと
-### 学び
-### 詰まったところ
-### 次にやること
-
-## Day4 - 2026/08/16
+## Day7 - 2026/08/19
 ### 実施したこと
 ### 学び
 ### 詰まったところ

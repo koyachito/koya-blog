@@ -42,3 +42,6 @@ docker compose ps
 5. Prisma
 npx prisma generate
 npx prisma migrate dev
+
+6. Auth.js
+npm instakk next-auth
