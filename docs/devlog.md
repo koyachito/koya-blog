@@ -156,135 +156,62 @@ https://mikoto2000.blogspot.com/2025/01/prisma-typescript-postgresql.html
 ## Day5 - 2026/08/17
 ### 実施したこと
 - `docs/requirements`の修正
-    - サニタイズ要件の削除（react-markdownのため不必要に)
+    - Markdown内でHTMLタグを使用しない仕様にしたため、別途HTMLサニタイズ処理を行う要件を削除
     - Markdown内でHTMLタグを使わない旨明記
-    - 認証要件，パスワードのハッシュ化は場合によっては必要ないので技術選定に関わらない形に書き直し
+    - 認証要件について、パスワード認証を採用する場合にのみパスワードハッシュ化が必要になるため、特定の認証方式に依存しない形に修
 - 開発環境構築手順書の作成
 - 要件変更により使用しなくなったパッケージをアンインストール
+- Auth.jsの導入
+- OAuthの導入
+- /admin, /login, /403ページの実装
+- OAuthによる/adminへのアクセス認可の実装
+- 未ログイン、権限のないユーザー、管理者それぞれのアクセス制御を確認
+- ログアウト処理の実装
 
 ### 学び
-### 詰まったところ
-### 詰まったところ
-- Auth.js実装時に`handlers`が`undefined`になるエラー
-    - `next-auth@4.24.15`がインストールされていた
-    - v4とv5ではAuth.jsのAPIが異なり，`handlers`を使用する現在の実装はv5向けだった
-    - `npm install next-auth@beta`でv5へ更新
-    - `auth.ts`の実装例をそのまま使ったため，インストールされているバージョンとの違いに気づかなかった
-- Auth.jsでMissingSecretエラー
-    - `/api/auth/providers`へアクセスしたところ`MissingSecret`が発生
-    - Google OAuthの`AUTH_GOOGLE_SECRET`とは別に，Auth.js自身の`AUTH_SECRET`が必要
-    - `npx auth secret`で`BETTER_AUTH_SECRET`を生成し`.env`に設定
+- GitHub Codespacesで開発しているため、ブラウザからアクセスするURLと、Codespace内部でNext.jsが動作しているURLが異なる
+- OAuthやServer Actionsでは、このURLの違いによって追加設定が必要になる場合がある
+- Auth.jsの認証とNext.jsのServer Actionsは別の仕組みとして動作している
 
-- Auth.jsのSecret設定
-    -  `npx auth secret`で生成した環境変数名が`BETTER_AUTH_SECRET`になっていた
-    - 今回はAuth.jsを使用しているため，`AUTH_SECRET`として`.env`に設定
-    - `/api/auth/providers`にアクセスし，Google Providerの情報がJSONで返ることを確認
+詰まったところ
 
-- CodespacesでOAuthのURLがlocalhostになる
-    - Auth.jsがOAuthの`signinUrl`，`callbackUrl`を`localhost:3000`として生成
-    - Codespacesの外部URLをAuth.jsに設定
-    - Google Cloud側にもCodespacesのURLを設定
-    - Google OAuthによるログインを確認
-## GitHub CodespacesでServer Actionsが実行できない問題
+Auth.js実装時にhandlersがundefinedになる
 
-### 症状
+* next-auth@4.24.15がインストールされていた
+* v4とv5ではAuth.jsのAPIが異なり、handlersを使用する現在の実装はv5向けだった
+* npm install next-auth@betaでv5へ更新
+* auth.tsの実装例をそのまま使用したため、インストールされているバージョンとの違いに気づかなかった
 
-管理画面にログアウト用のServer Actionを実装したところ、以下のエラーが発生した。
+Auth.jsでMissingSecretエラー
 
-Invalid Server Actions request.
+* /api/auth/providersへアクセスしたところ、MissingSecretが発生
+* Google OAuthのAUTH_GOOGLE_SECRETとは別に、Auth.js自身が使用するSecretが必要だった
+* npx auth secretでSecretを生成して.envに設定
 
-Next.js:
-16.3.0 (Turbopack)
+Auth.jsのSecret設定
 
-### 切り分け
+* npx auth secretで生成された環境変数名がBETTER_AUTH_SECRETになっていた
+* 今回はAuth.jsを使用しているため、AUTH_SECRETとして.envに設定
+* /api/auth/providersにアクセスし、Google Providerの情報がJSONで返ることを確認
 
-最初はAuth.jsのsignOut()が原因だと考えた。
+CodespacesでOAuthのURLがlocalhostになる
 
-しかし、signOut()を外して最小のServer Actionにしても同じエラーが発生した。
+* Auth.jsがOAuthのsigninUrl、callbackUrlをlocalhost:3000として生成していた
+* Codespacesの外部URLをAuth.jsに設定
+* Google Cloud側にもCodespacesのURLを設定
+* Google OAuthによるログインを確認
 
-"use server";
+GitHub CodespacesでServer Actionsが実行できない
 
-export async function testAction() {
-    console.log("Server Action executed");
-}
+* 管理画面にログアウト用のServer Actionを実装したところ、Invalid Server Actions request.が発生
+* 最初はAuth.jsのsignOut()が原因だと考えた
+* signOut()を外して最小のServer Actionにしても同じエラーが発生したため、Auth.jsではなくServer Actions自体の問題だと切り分けた
+* Codespacesではブラウザからアクセスする*.app.github.devと、Codespace内部のlocalhost:3000が異なる
+* Next.jsのServer ActionsにはOrigin/Hostに関するセキュリティチェックがあり、Codespacesのポートフォワーディングによるホストの違いでリクエストが拒否されていた
+* next.config.tsにServer ActionsのallowedOriginsを設定
+* .nextを削除してNext.jsを再起動することで正常に動作した
 
-このことから、signOut()ではなくServer Actions自体に問題があると判断した。
-
-### 原因
-
-今回の開発環境はGitHub Codespacesを使用している。
-
-Codespace内部ではNext.jsがlocalhost:3000で動作しているが、ブラウザからは以下のようなGitHub Codespacesの転送URLからアクセスしている。
-
-https://xxxxx-3000.app.github.dev
-
-つまり、
-
-ブラウザ
-↓
-https://xxxxx-3000.app.github.dev
-↓
-GitHub Codespacesのポートフォワーディング
-↓
-localhost:3000
-↓
-Next.js
-
-という構成になっている。
-
-Next.jsのServer ActionsにはOrigin/Hostに関するセキュリティチェックがあるため、Codespacesのポートフォワーディングによって外部URLと内部のホスト情報が異なることで、Server Actionのリクエストが拒否されていた。
-
-### Auth.jsの設定との違い
-
-.envには以下を設定していた。
-
-AUTH_TRUST_HOST=true
-AUTH_URL=https://xxxxx-3000.app.github.dev
-
-しかし、これらはAuth.js側の設定であり、Next.jsのServer ActionsのOrigin検証とは別の仕組みだった。
-
-そのため、Google OAuthによるログインは正常に動作していたが、Server Actionsだけがエラーになっていた。
-
-### 解決
-
-next.config.tsにServer Actionsの許可Originを追加した。
-
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-    reactCompiler: true,
-
-    experimental: {
-        serverActions: {
-            allowedOrigins: [
-                "localhost:3000",
-                "*.app.github.dev",
-                "*.github.dev",
-                "*.githubpreview.dev",
-            ],
-        },
-    },
-};
-
-export default nextConfig;
-
-設定変更後、.nextを削除してNext.jsを再起動した。
-
-rm -rf .next
-npm run dev
-
-その後、最小のServer Actionを実行したところ正常に動作した。
-
-### 学んだこと
-
-・GitHub Codespacesでは、アプリ内部のURLとブラウザからアクセスするURLが異なる
-・ポートフォワーディングによってlocalhost:3000が*.app.github.devとして公開される
-・Auth.jsのAUTH_URL / AUTH_TRUST_HOSTと、Next.js Server ActionsのOrigin検証は別の仕組み
-・エラーが発生したライブラリをすぐに原因と決めつけず、最小構成にして切り分けることが重要
-・signOut()を外してもエラーが再現したことで、Auth.jsを原因から除外できた
-・最小のServer Actionでもエラーが発生したため、Next.jsおよびCodespacesの環境側を調査して解決した
-
-### デバッグの流れ
+デバッグの流れ
 
 signOut()でエラー
 ↓
@@ -302,8 +229,10 @@ allowedOriginsを設定
 ↓
 解決
 
-
 ### 次にやること
+- /adminへの記事CRUD実装
+- /adminへのアクセス制限だけでなく、Server Action側にもrequireAdmin()を実装する
+
 
 ## Day6 - 2026/08/18
 ### 実施したこと
