@@ -44,4 +44,7 @@ npx prisma generate
 npx prisma migrate dev
 
 6. Auth.js
-npm instakk next-auth
+npm install next-auth
+
+7. zod
+npm install zod

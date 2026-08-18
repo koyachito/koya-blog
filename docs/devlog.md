@@ -236,9 +236,46 @@ allowedOriginsを設定
 
 ## Day6 - 2026/08/18
 ### 実施したこと
+- 管理画面の記事CRUDを実装
+    - Create：新規記事作成
+    - Read：記事一覧表示
+    - Update：記事編集
+    - Delete：記事削除
+- Server Actionを利用したフォーム処理を実装
+- Zodによるサーバー側バリデーションを実装
+- `useActionState` を利用してServer Actionの結果をClient Componentで処理
+- 記事削除時の確認UIを実装
+- 存在しない記事IDに対して404を返す処理を実装
+- `npm run dev` でCRUDの正常系動作を確認
+- env.exampleの追加
+
 ### 学び
+- Server ComponentとClient Componentの役割
+    - Server Component：サーバー側でデータ取得などを行う
+    - Client Component：ブラウザ側で状態管理やイベント処理を行う
+- Server Action
+    - フォームから送信されたデータをサーバー側で処理できる
+    - `FormData` からフォームの入力値を取得し、Prismaを通してDBを更新する
+- `useActionState`
+    - Server Actionの実行結果をClient Component側で受け取り、エラー表示などのUIに反映できる
+- `useState`
+    - 削除確認UIの表示・非表示など、Client Component内の状態を管理する
+- HTMLの`required`とZodの役割の違い
+    - `required`：ブラウザ上での入力チェック
+    - Zod：サーバー側での入力値の検証
+- `notFound()`を利用して、存在しない記事IDへのアクセスを404として処理できる
+
 ### 詰まったところ
+
+#### Prisma依存パッケージの脆弱性
+- `npm audit` で `deepmerge-ts < 8.0.0` にHigh severityの脆弱性を検出。
+- `deepmerge-ts` は Prisma → `@prisma/config` 経由の間接依存で、現在使用している Prisma 7.9.1 および最新の `@prisma/config` でも `deepmerge-ts 7.1.5` が指定されている。
+- `npm audit fix --force` では Prisma 6.12.0 へのダウングレードが提案されるため、今回は実行せず保留。
+- 現時点では自分で直接アップデートできる依存関係ではないため、Prisma側で依存関係が更新された際に対応する。
+
 ### 次にやること
+- Markdown記事の表示・編集フローの確認
+- 管理画面のUI改善
 
 ## Day7 - 2026/08/19
 ### 実施したこと
