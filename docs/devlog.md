@@ -281,4 +281,18 @@ allowedOriginsを設定
 ### 実施したこと
 ### 学び
 ### 詰まったところ
-### 次にやること
+- prisma.post.findMany() で500エラー
+- P1001: Can't reach database server at localhost:5432
+- docker compose up -d をやり直したところ解消
+
+### 学んだこと
+- Prismaのエラーが出た場合でも、必ずしもPrismaやクエリが原因とは限らない。
+
+今回のようなDBアクセスのエラーでは、
+
+1. DBコンテナが起動しているか
+2. localhost:5432 に接続できるか
+3. DATABASE_URL が正しいか
+4. その上でPrismaのschemaやクエリを確認する
+
+という順番で切り分けるとよい。
