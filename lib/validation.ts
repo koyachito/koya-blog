@@ -11,6 +11,14 @@ export const postSchema = z.object({
         .string()
         .trim()
         .min(1, "本文を入力してください"),
+
+    categoryId: z
+        .string()
+        .min(1)
+        .nullable(),
+
+    tagIds: z
+        .array(z.string().min(1)),
 });
 
 export const categorySchema = z.object({

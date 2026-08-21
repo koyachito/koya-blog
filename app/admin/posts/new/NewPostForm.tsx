@@ -3,7 +3,18 @@
 import { useActionState } from "react";
 import { handleCreate } from "./actions";
 
-export default function NewPostForm () {
+type Props = {
+    categories: {
+        id: string;
+        name: string;
+    } [];
+    tags: {
+        id: string;
+        name: string;
+    }[];
+};
+
+export default function NewPostForm ({categories, tags}: Props) {
     const [state, formAction, isPending] = useActionState(
         handleCreate,
         {}
@@ -33,13 +44,55 @@ export default function NewPostForm () {
                         required
                     />
                 </div>
-
-                    <button 
-                        type="submit"
-                        disabled={isPending}
+                
+                <div>
+                    <label htmlFor="category">カテゴリー</label>
+                    <select
+                        id="category"
+                        name="categoryId"
+                        defaultValue=""
                     >
-                        {isPending ? "作成中" : "作成"}
-                    </button>
+                        <option value="">
+                            カテゴリーなし
+                        </option>
+                        {categories.map((category) => (
+                            <option
+                                key={category.id}
+                                value={category.id}>
+                                    {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                
+                <fieldset>
+                    <legend>タグ</legend>
+                    {tags.length === 0 ? (
+                        <p>タグはまだありません</p>
+                    ) : (
+                        tags.map((tag) => (
+                            <label
+                                key={tag.id}
+                                htmlFor={`tag-${tag.id}`}
+                            >
+                                <input  
+                                    id={`tag-${tag.id}`}
+                                    name="tagIds"
+                                    type="checkbox"
+                                    value={tag.id}
+                                />
+                                {tag.name}
+                            </label>
+                        ))
+                    )}
+                </fieldset>
+
+                <button 
+                    type="submit"
+                    disabled={isPending}
+                >
+                    {isPending ? "作成中" : "作成"}
+                </button>
             </form>
     );
 }
