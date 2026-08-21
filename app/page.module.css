@@ -1,0 +1,26 @@
+.heroLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 3rem;
+}
+
+.heroAvatar {
+  width: clamp(140px, 20vw, 200px);
+  height: auto;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-hover-background);
+}
+
+@media (max-width: 700px) {
+  .heroLayout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .heroAvatar {
+    grid-row: 1;
+    width: 120px;
+  }
+}

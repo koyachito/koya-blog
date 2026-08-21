@@ -1,0 +1,32 @@
+.aboutIntro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.aboutIntro > div {
+  flex: 1;
+}
+
+.aboutAvatar {
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-hover-background);
+}
+
+@media (max-width: 640px) {
+  .aboutIntro {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
+
+  .aboutAvatar {
+    width: 80px;
+    height: 80px;
+  }
+}
