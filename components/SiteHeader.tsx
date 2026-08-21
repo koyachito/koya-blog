@@ -11,7 +11,7 @@ export default function SiteHeader() {
         <nav aria-label="メインナビゲーション">
           <ul className="site-nav">
             <li>
-              <Link href="/">Blog</Link>
+              <Link href="/blog">Blog</Link>
             </li>
             <li>
               <Link href="/about">About</Link>

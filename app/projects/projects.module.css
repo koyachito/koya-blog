@@ -1,0 +1,145 @@
+.projects {
+  width: min(100% - 3rem, var(--layout-width));
+}
+
+.projectList {
+  display: grid;
+  gap: 2rem;
+}
+
+.projectCard {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+}
+
+.projectCardWide {
+  grid-template-columns: 1fr;
+}
+
+.projectMedia {
+  position: relative;
+  min-height: 28rem;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-hover-background);
+}
+
+.projectMediaContain {
+  background: var(--color-code-background);
+}
+
+.projectImage {
+  object-fit: cover;
+}
+
+.projectMediaContain .projectImage {
+  object-fit: contain;
+}
+
+.ramenGallery {
+  display: grid;
+  align-content: start;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-code-background);
+}
+
+.ramenMainImage,
+.ramenSubImage {
+  position: relative;
+  background: var(--color-code-background);
+}
+
+.ramenMainImage {
+  aspect-ratio: 1 / 1;
+}
+
+.ramenSubImages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--color-border);
+}
+
+.ramenSubImage {
+  aspect-ratio: 1 / 1;
+}
+
+.ramenSubImage:first-child {
+  border-right: 1px solid var(--color-border);
+}
+
+.ramenImage {
+  object-fit: contain;
+}
+
+.projectContent {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.projectContent h2 {
+  margin-top: 0;
+}
+
+.projectContent section {
+  margin-top: 2rem;
+}
+
+.projectContent section h3 {
+  margin-top: 0;
+}
+
+.summary {
+  font-size: 1.1rem;
+}
+
+.technologyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.technologyList li {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.projectLinks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.note {
+  margin-top: 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 850px) {
+  .projects {
+    width: min(100% - 2rem, var(--layout-width));
+  }
+
+  .projectCard {
+    grid-template-columns: 1fr;
+  }
+
+  .projectMedia {
+    min-height: 18rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .ramenGallery {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+}
