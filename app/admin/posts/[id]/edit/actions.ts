@@ -19,6 +19,8 @@ export async function handleUpdate(
     const id = formData.get("id");
     const categoryIdValue = formData.get("categoryId");
 
+    const published = formData.get("published") === "on";
+
     if (typeof id !== "string" || id.length === 0) {
         return {
             error: "記事IDが不正です。",
@@ -35,6 +37,7 @@ export async function handleUpdate(
         content: formData.get("content"),
         categoryId,
         tagIds: formData.getAll("tagIds"),
+        published,
     });
     if (!result.success) {
         return {
@@ -49,7 +52,8 @@ export async function handleUpdate(
             result.data.title,
             result.data.content,
             result.data.categoryId,
-            result.data.tagIds
+            result.data.tagIds,
+            result.data.published,
         );
     } catch (error) {
         if (

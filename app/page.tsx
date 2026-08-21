@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/date";
-import { getPosts } from "@/lib/posts";
+import { getPublishedPosts } from "@/lib/posts";
 
 export default async function Home() {
-  const posts = await getPosts();
+  const posts = await getPublishedPosts();
   
   return (
     <main>

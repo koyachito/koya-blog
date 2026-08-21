@@ -8,6 +8,7 @@ type Props = {
         id: string;
         title: string;
         content: string;
+        published: boolean;
         categoryId: string | null;
         tags: {
             id: string;
@@ -126,6 +127,18 @@ export default function EditPostForm({
                     ))
                 )}
             </fieldset>
+
+            <div>
+                <label htmlFor="published">
+                    <input
+                        id="published"
+                        name="published"
+                        type="checkbox"
+                        defaultChecked={post.published}
+                    />
+                    公開する
+                </label>
+            </div>
 
             <button
                 type="submit"

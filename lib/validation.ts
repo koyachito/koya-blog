@@ -19,6 +19,8 @@ export const postSchema = z.object({
 
     tagIds: z
         .array(z.string().min(1)),
+    
+    published: z.boolean(),
 });
 
 export const categorySchema = z.object({

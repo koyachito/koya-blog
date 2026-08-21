@@ -31,11 +31,14 @@ export async function handleCreate(
             ? null
             : categoryIdValue;
 
+    const published = formData.get("published") === "on";
+
     const result = postSchema.safeParse({
         title: formData.get("title"),
         content: formData.get("content"),
         categoryId,
         tagIds: formData.getAll("tagIds"),
+        published,
     });
 
     if (!result.success) {
@@ -51,7 +54,8 @@ export async function handleCreate(
             result.data.title,
             result.data.content,
             result.data.categoryId,
-            result.data.tagIds
+            result.data.tagIds,
+            result.data.published,
         );
     } catch (error) {
         if (

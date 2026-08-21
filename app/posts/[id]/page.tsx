@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import MarkdownView from "@/components/MarkdownView";
 import { formatDate } from "@/lib/date";
-import { getPost } from "@/lib/posts";
+import { getPublishedPost } from "@/lib/posts";
 
 type Props = {
     params: Promise<{ id: string }>;
@@ -11,7 +11,7 @@ type Props = {
 export default async function PostPage({ params }: Props) {
     const { id } = await params;
 
-    const post = await getPost(id);
+    const post = await getPublishedPost(id);
 
     if(!post) {
         notFound();
