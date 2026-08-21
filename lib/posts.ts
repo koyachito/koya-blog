@@ -134,3 +134,23 @@ export async function getPublishedPost(id: string) {
         },
     });
 }
+
+export async function getLatestPublishedPosts(limit: number) {
+  return prisma.post.findMany({
+    where: {
+      published: true,
+    },
+    include: {
+      category: true,
+      tags: {
+        orderBy: {
+          name: "asc",
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: limit,
+  });
+}
