@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
+import { getCategories } from "@/lib/categories";
 import { getPost } from "@/lib/posts";
+import { getTags } from "@/lib/tags";
 import EditPostForm from "./EditPostForm";
 
 type Props = {
@@ -14,7 +16,11 @@ export default async function EditPostPage({ params }: Props){
 
     const { id } = await params;
 
-    const post = await getPost(id);
+    const [post, categories, tags] = await Promise.all([
+        getPost(id),
+        getCategories(),
+        getTags(),
+    ]);
 
     if (!post) {
         notFound();
@@ -24,7 +30,11 @@ export default async function EditPostPage({ params }: Props){
         <main>
             <h1>記事編集</h1>
 
-            <EditPostForm post={post} />
+            <EditPostForm
+                post={post}
+                categories={categories}
+                tags={tags}
+            />
         </main>
     )
 }
