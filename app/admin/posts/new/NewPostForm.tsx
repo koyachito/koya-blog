@@ -34,8 +34,11 @@ export default function NewPostForm () {
                     />
                 </div>
 
-                    <button type="submit">
-                        作成
+                    <button 
+                        type="submit"
+                        disabled={isPending}
+                    >
+                        {isPending ? "作成中" : "作成"}
                     </button>
             </form>
     );

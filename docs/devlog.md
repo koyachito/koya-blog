@@ -296,3 +296,18 @@ allowedOriginsを設定
 4. その上でPrismaのschemaやクエリを確認する
 
 という順番で切り分けるとよい。
+
+## Day8 - 2026/08/20
+### 実施したこと
+- Categoryを任意設定に変更し、migrationを適用
+- CategoryのDB操作・入力検証を実装
+- 管理画面にCategoryの作成・一覧表示を追加
+
+### 学び
+- 任意relationでは外部キーとrelation fieldの両方に?が必要
+- Server Action内でも認可が必要
+- onDelete: Restrictで使用中Categoryの削除をDB側でも防げる
+
+### 詰まったところ
+- @relation()の複数行記述でvalidation errorが発生し、1行にして解決
+

@@ -55,6 +55,9 @@ export default async function AdminPage() {
                 </article>
             ))}
 
+            <Link href="/admin/categories">カテゴリー管理</Link>
+            <Link href="/admin/tags">タグ管理</Link>
+
         </main>
     );
 }

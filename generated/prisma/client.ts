@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type Post = Prisma.PostModel
 /**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel
+/**
  * Model Tag
  * 
  */
