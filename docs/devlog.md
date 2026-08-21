@@ -311,3 +311,27 @@ allowedOriginsを設定
 ### 詰まったところ
 - @relation()の複数行記述でvalidation errorが発生し、1行にして解決
 
+## Day9 - 2026/08/21
+
+### 実施したこと
+- カテゴリー・タグのCRUDを実装
+  - 重複登録と使用中データの削除を制限
+- 記事へのカテゴリー・複数タグの設定・変更・解除を実装
+- 記事の公開・下書き機能を実装
+- 管理画面と一般画面にカテゴリー・タグ・日時を表示
+- Vercel＋Neonへデプロイ
+  - Cloudflareで`koyachito.com`を設定
+  - Google OAuthとVercel Functionsのリージョンを設定
+- 公開画面をポートフォリオとして整備
+  - 共通ヘッダー・フッター、レスポンシブCSS
+  - `/blog`、`/about`、`/projects`
+  - 制作物の画像・GIF・外部リンク
+
+### 学び
+- Prismaの`connect`、`set`、`disconnect`によるリレーション操作
+- CSS変数、Flexbox、Grid、CSS Modulesによる画面設計
+- 機能実装から本番デプロイまでの一連の流れ
+
+### 詰まったところ
+- Codespacesの`next dev`が`SIGTERM`（終了コード143）で終了
+- `npm run build`と`npm run start`では正常に動作することを確認
