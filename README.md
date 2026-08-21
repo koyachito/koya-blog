@@ -2,37 +2,45 @@
 
 Next.jsとPostgreSQLで構築した、個人ブログ兼ポートフォリオサイトです。
 
-記事の閲覧だけでなく、Google OAuthによる管理者認証、Markdown形式の記事作成、カテゴリー・タグ管理など、ブログ運営に必要なCMS機能を実装しています。
+TypeScriptとCRUDの学習を目的として、記事管理、Google OAuthによる認証・認可、Markdown表示、カテゴリー・タグ管理などを実装しました。
 
 ## URL
 
 - Webサイト: https://koyachito.com
-- Repository: https://github.com/koyachito/koya-blog
+- GitHub: https://github.com/koyachito/koya-blog
 
 管理画面は登録された管理者アカウントのみ利用できます。
 
+## Screenshot
+
+![koya-blogのトップページ](docs/images/top.jpeg)
+
 ## 主な機能
 
-### 一般ユーザー向け
+### 公開画面
 
-- 公開済み記事の一覧表示
-- 記事詳細の表示
-- MarkdownのHTML表示
+- ポートフォリオ用トップページ
+- プロフィールページ
+- 制作物紹介ページ
+- 公開済み記事の一覧・詳細表示
+- Markdown形式の記事表示
 - カテゴリー・タグの表示
-- 記事の作成日時・更新日時の表示
+- 作成日時・更新日時の表示
+- レスポンシブデザイン
 - 下書き記事へのアクセス制限
 
-### 管理者向け
+### 管理画面
 
 - Google OAuthによるログイン
 - メールアドレスによる管理者認可
-- 記事の作成・閲覧・編集・削除
+- 記事の作成・編集・削除
 - 記事の公開・下書き切り替え
-- カテゴリーの作成・名前変更・削除
-- タグの作成・名前変更・削除
-- 記事へのカテゴリー・タグの設定
+- カテゴリーの作成・一覧・名前変更・削除
+- タグの作成・一覧・名前変更・削除
+- 記事へのカテゴリー・複数タグの設定・変更・解除
 - 使用中のカテゴリー・タグの削除制限
-- Zodによるフォーム入力値の検証
+- Zodによる入力値の検証
+- 入力エラーのインライン表示
 
 ## 技術スタック
 
@@ -57,7 +65,7 @@ Next.jsとPostgreSQLで構築した、個人ブログ兼ポートフォリオサ
 
 記事やカテゴリーなどのデータ取得にはServer Componentsを使用しています。
 
-フォーム送信やデータ更新にはServer Actionsを使用し、クライアントから独自APIを直接呼び出さずにサーバー側の処理を実行する構成にしました。
+フォーム送信やデータ更新にはServer Actionsを使用し、クライアントから独自APIを直接呼び出さずに、サーバー側の処理を実行する構成にしました。
 
 ### 認証と認可
 
@@ -65,70 +73,67 @@ Auth.jsとGoogle OAuthを使用してログイン機能を実装しています�
 
 ログイン済みかどうかだけでなく、環境変数`ADMIN_EMAIL`とログインユーザーのメールアドレスを照合し、管理者以外が管理画面や更新処理を利用できないようにしています。
 
-### Markdownの表示
-
-記事本文はMarkdown形式でデータベースに保存します。
-
-表示時に`react-markdown`でReactコンポーネントへ変換し、`remark-gfm`によって表や取り消し線などのGitHub Flavored Markdownにも対応しています。
-
-Markdown内のHTMLは解釈しない構成にしています。
-
-### データベース設計
+### カテゴリーとタグ
 
 記事とカテゴリーは多対一、記事とタグは多対多の関係として設計しています。
 
-カテゴリーとタグは独立したモデルとして管理し、記事作成・編集時に関連付けます。
+Prismaの`connect`、`set`、`disconnect`を使い、記事作成・編集時の関連付けと解除を実装しました。
 
-## ディレクトリ構成
+使用中のカテゴリーやタグは削除できないようにし、記事との関連が壊れないようにしています。
 
-```text
-app/
-├── admin/          管理画面
-├── api/auth/       Auth.jsのRoute Handler
-├── login/          ログイン画面
-├── posts/          一般ユーザー向け記事詳細
-├── layout.tsx      共通レイアウト
-└── page.tsx        トップページ
+### Markdown
 
-components/
-└── MarkdownView.tsx
+記事本文はMarkdown形式でデータベースに保存します。
 
-lib/
-├── auth.ts         管理者認可
-├── categories.ts   カテゴリーのDB操作
-├── posts.ts        記事のDB操作
-├── prisma.ts       Prisma Client
-├── tags.ts         タグのDB操作
-└── validation.ts   Zodスキーマ
+表示時に`react-markdown`でReactコンポーネントへ変換し、`remark-gfm`で表や取り消し線などのGitHub Flavored Markdownに対応しています。
 
-prisma/
-├── migrations/
-└── schema.prisma
+Markdown内のHTMLは解釈しない構成にしています。
 
-docs/
-├── devlog.md
-├── requirements.md
-└── setup.md
-```
+### 公開状態の管理
+
+記事には公開・下書きの状態を持たせています。
+
+一般ユーザー向けの取得処理では公開済み記事だけを検索条件に含め、下書き記事のIDを直接指定しても閲覧できないようにしています。
+
+## AIの利用について
+
+開発では、ChatGPTやCodexを調査、実装補助、コードレビューに利用しました。
+
+提示されたコードをそのまま採用するのではなく、公式ドキュメントやWebでも調査し、一行ずつ役割と動作を理解してから使用しました。
+
+要件定義、仕様の選択、実装範囲の管理、動作確認、デプロイの判断は自分で行い、2026年8月12日から8月22日までの期間で本番公開まで完了しました。
+
+## デプロイ構成
+
+| 用途 | サービス |
+|---|---|
+| Next.js | Vercel |
+| PostgreSQL | Neon（Singapore） |
+| DNS・独自ドメイン | Cloudflare |
+| OAuth | Google Cloud |
+| Serverless Functions | Vercel Functions（Singapore） |
 
 ## ローカル開発
 
-環境構築に必要な手順と環境変数については、[開発環境構築手順](docs/setup.md)を参照してください。
+```bash
+git clone https://github.com/koyachito/koya-blog.git
+cd koya-blog
+npm install
+cp .env.example .env
+docker compose up -d
+npx prisma migrate dev
+npm run dev
+```
+
+`.env`には、データベース接続情報、Google OAuth、Auth.js、管理者メールアドレスの設定が必要です。
+
+詳細は[開発環境構築手順](docs/setup.md)を参照してください。
 
 ## ドキュメント
 
 - [要件定義](docs/requirements.md)
 - [開発環境構築手順](docs/setup.md)
 - [開発ログ](docs/devlog.md)
-
-## 今後の改善予定
-
-- 公開画面のデザイン調整
-- プロフィールページ
-- ポートフォリオページ
-- 問い合わせページ
-- エラーページ
-- テストコード
 
 ## Author
 
