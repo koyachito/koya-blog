@@ -4,12 +4,14 @@ export async function createPost (
     title: string, 
     content: string,
     categoryId: string | null,
-    tagIds: string[]
+    tagIds: string[],
+    published: boolean,
 ) {
     return prisma.post.create({
         data: {
             title,
             content,
+            published,
             category: categoryId
                 ? {
                     connect: {
@@ -63,13 +65,15 @@ export async function updatePost(
     title: string,
     content: string,
     categoryId: string | null,
-    tagIds: string[]
+    tagIds: string[],
+    published: boolean,
 ) {
     return prisma.post.update ({
         where: {id},
         data: {
             title,
             content,
+            published,
             category: categoryId
                 ? {
                     connect: {
@@ -92,5 +96,41 @@ export async function deletePost(id:string)
 {
     return prisma.post.delete({
         where:{id},
+    });
+}
+
+export async function getPublishedPosts() {
+    return prisma.post.findMany({
+        where: {
+            published: true,
+        },
+        include: {
+            category: true,
+            tags: {
+                orderBy: {
+                    name: "asc",
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+}
+
+export async function getPublishedPost(id: string) {
+    return prisma.post.findFirst({
+        where: {
+            id,
+            published: true,
+        },
+        include: {
+            category: true,
+            tags: {
+                orderBy: {
+                    name: "asc",
+                },
+            },
+        },
     });
 }

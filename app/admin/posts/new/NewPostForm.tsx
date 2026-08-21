@@ -87,6 +87,17 @@ export default function NewPostForm ({categories, tags}: Props) {
                     )}
                 </fieldset>
 
+                <div>
+                    <label htmlFor="published">
+                        <input
+                            id="published"
+                            name="published"
+                            type="checkbox"
+                        />
+                        公開する
+                    </label>
+                </div> 
+
                 <button 
                     type="submit"
                     disabled={isPending}
