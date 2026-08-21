@@ -11,11 +11,13 @@ export default function SiteHeader() {
         <nav aria-label="メインナビゲーション">
           <ul className="site-nav">
             <li>
-              <Link href="/blog">Blog</Link>
-            </li>
-            <li>
               <Link href="/about">About</Link>
             </li>
+
+            <li>
+              <Link href="/blog">Blog</Link>
+            </li>
+
             <li>
               <Link href="/projects">Projects</Link>
             </li>
