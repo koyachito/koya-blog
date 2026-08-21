@@ -1,3 +1,5 @@
+import Image from "next/image";
+import styles from "./about.module.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -9,14 +11,24 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="about">
-      <header className="page-intro">
-        <p className="eyebrow">About</p>
-        <h1>プロフィール</h1>
+      <header className={`page-intro ${styles.aboutIntro}`}>
+        <div>
+          <p className="eyebrow">About</p>
+          <h1>プロフィール</h1>
 
-        <p>
-          文系分野での学習・実務経験と語学力を生かしながら、
-          Webエンジニアを目指してソフトウェア開発を学んでいます。
-        </p>
+          <p>
+            文系分野での学習・実務経験と語学力を生かしながら、
+            Webエンジニアを目指してソフトウェア開発を学んでいます。
+          </p>
+        </div>
+
+        <Image
+          className={styles.aboutAvatar}
+          src="/profile.jpeg"
+          alt="骸骨をモチーフにしたkoyachitoのアイコン"
+          width={96}
+          height={96}
+        />
       </header>
 
       <section className="about-section">

@@ -1,3 +1,5 @@
+import Image from "next/image";
+import styles from "./page.module.css";
 import Link from "next/link";
 import { formatDate } from "@/lib/date";
 import { getLatestPublishedPosts } from "@/lib/posts";
@@ -9,27 +11,38 @@ export default async function HomePage() {
 
   return (
     <main className="home">
-      <section className="hero">
-        <p className="eyebrow">
-          Portfolio & Dev Blog
-        </p>
+      <section className={`hero ${styles.heroLayout}`}>
+        <div>
+          <p className="eyebrow">
+            Portfolio & Dev Blog
+          </p>
 
-        <h1>koyachito</h1>
+          <h1>koyachito</h1>
 
-        <p className="hero-description">
-          Webエンジニアを目指して、TypeScriptやNext.jsを中心に
-          Web開発を学んでいます。制作物と学習記録を掲載しています。
-        </p>
+          <p className="hero-description">
+            Webエンジニアを目指して、TypeScriptやNext.jsを中心に
+            Web開発を学んでいます。制作物と学習記録を掲載しています。
+          </p>
 
-        <div className="hero-links">
-          <Link className="button-link" href="/projects">
-            制作物を見る
-          </Link>
+          <div className="hero-links">
+            <Link className="button-link" href="/projects">
+              制作物を見る
+            </Link>
 
-          <Link className="text-link" href="/about">
-            プロフィールを見る
-          </Link>
+            <Link className="text-link" href="/about">
+              プロフィールを見る
+            </Link>
+          </div>
         </div>
+
+        <Image
+          className={styles.heroAvatar}
+          src="/profile.jpeg"
+          alt="骸骨をモチーフにしたkoyachitoのアイコン"
+          width={200}
+          height={200}
+          priority
+        />
       </section>
 
       <section className="home-section">
