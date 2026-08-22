@@ -535,3 +535,28 @@ label {
     grid-template-columns: 1fr;
   }
 }
+
+.image-uploader {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-hover-background);
+}
+
+.image-uploader button {
+  justify-self: start;
+}
+
+.image-uploader small {
+  color: var(--color-text-muted);
+}
+
+.markdown-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-block: 1.5rem;
+  border-radius: 8px;
+}
