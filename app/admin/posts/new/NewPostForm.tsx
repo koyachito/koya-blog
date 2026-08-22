@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { handleCreate } from "./actions";
+import ImageUploader from "@/components/ImageUploader";
 
 type Props = {
     categories: {
@@ -19,6 +20,8 @@ export default function NewPostForm ({categories, tags}: Props) {
         handleCreate,
         {}
     );
+
+    const contentRef = useRef<HTMLTextAreaElement>(null);
 
     return (
             <form action={formAction}>
@@ -39,10 +42,12 @@ export default function NewPostForm ({categories, tags}: Props) {
                 <div>
                     <label htmlFor="content">本文</label>
                     <textarea
+                        ref={contentRef}
                         id="content"
                         name="content"
                         required
                     />
+                    <ImageUploader textareaRef={contentRef} />
                 </div>
                 
                 <div>

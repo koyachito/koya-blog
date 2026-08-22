@@ -48,3 +48,6 @@ npm install next-auth
 
 7. zod
 npm install zod
+
+8. blob
+npm install @vercel/blob

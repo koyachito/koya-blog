@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { handleUpdate } from "./actions";
+import ImageUploader from "@/components/ImageUploader";
 
 type Props = {
     post: {
@@ -34,6 +35,8 @@ export default function EditPostForm({
         handleUpdate,
         {}
     );
+
+    const contentRef = useRef<HTMLTextAreaElement>(null);
 
     return (
         <form action={formAction}>
@@ -69,11 +72,13 @@ export default function EditPostForm({
                 </label>
 
                 <textarea
+                    ref={contentRef}
                     id="content"
                     name="content"
                     defaultValue={post.content}
                     required
                 />
+                <ImageUploader textareaRef={contentRef} />
             </div>
 
             <div>
